@@ -47,6 +47,22 @@ rm taskmaster.py           # init copied it to .codex/hooks/
 Then start `codex` in the repo and **approve the hook with `/hooks`**. Codex
 does not run unreviewed hooks.
 
+### Windows and the Codex desktop app
+
+The Codex desktop app (macOS and Windows) uses the same agent engine as the CLI
+and runs the same `Stop` hooks. On native Windows, run `init` with the Python
+you want to use (`py taskmaster.py init`). It writes that interpreter's
+absolute path into `.codex/hooks.json`, because Windows has no `python3` or
+`$(...)` by default. Git must be on `PATH`.
+
+Known quirks in the desktop app:
+- After a blocked stop, the app folds the earlier answer into a collapsed
+  "Worked for ..." section ([openai/codex#34418](https://github.com/openai/codex/issues/34418)).
+  This only affects the display; the work continues.
+- Hooks added while a task is already open may not apply until you start a new
+  task ([openai/codex#47607](https://github.com/openai/codex/issues/47607)).
+  If you need to approve the hook, do it once in the CLI with `codex` then `/hooks`.
+
 ## How it works
 
 ```

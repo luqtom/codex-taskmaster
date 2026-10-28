@@ -379,7 +379,12 @@ def cmd_init(args: list[str]) -> int:
         print(f"created {DEFAULT_CONFIG['tasks_file']}")
 
     hooks_path = codex / "hooks.json"
-    command = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/taskmaster.py" hook'
+    if os.name == "nt":
+        # No POSIX shell on native Windows (no `$(...)`, often no `python3`), so pin the
+        # interpreter that ran `init` and the absolute script path.
+        command = f'"{sys.executable}" "{target}" hook'
+    else:
+        command = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/taskmaster.py" hook'
     handler = {"type": "command", "command": command, "timeout": 300}
     hooks = {}
     if hooks_path.exists():
